@@ -33,7 +33,7 @@ local pt = powerColor[select(2, UnitPowerType"player")]
 pp:SetTextColor(pt.r, pt.g, pt.b, .9)
 
 local th = addon:CreateFontString"SifrTargetHealth"
-th:SetPoint("LEFT", ph, "RIGHT", 300, 0)
+th:SetPoint("CENTER", UIParent, "CENTER", 200, -50)
 th:SetFont(font, healthSize, "OUTLINE")
 th:SetTextColor(0, .7, 0, .9)
 
@@ -44,9 +44,15 @@ tp:SetFont(font, powerSize, "OUTLINE")
 local si = function(val) 
 	if val > 1000000 then
 		return string.format("%.1fM", val / 1000000)
-	else
-		return val
 	end
+	return val
+end
+
+local per = function(cur, max)
+	if max == 0 then
+		return 0
+	end
+	return math.floor(100 * cur / max)
 end
 
 addon.UNIT_HEALTH = function(self, event, unit) 
@@ -55,8 +61,8 @@ addon.UNIT_HEALTH = function(self, event, unit)
 	end
 
 	local cur = UnitHealth(unit)
-	local max = UnitHealthMax(unit)
-	local health = string.format("%s (%d%%)", si(cur), math.floor(100*cur/max))
+	local max = UnitHealthMax(unit) or 1
+	local health = string.format("%s (%d%%)", si(cur), per(cur, max))
 	if unit == "player" then
 		ph:SetText(health)
 	else
@@ -70,8 +76,8 @@ addon.UNIT_POWER = function(self, event, unit)
 	end
 
 	local cur = UnitPower(unit)
-	local max = UnitPowerMax(unit)
-	local power = string.format("%s (%d%%)", si(cur), math.floor(100*cur/max))
+	local max = UnitPowerMax(unit) 
+	local power = string.format("%s (%d%%)", si(cur), per(cur, max))
 	if unit == "player" then
 		pp:SetText(power)
 	else
