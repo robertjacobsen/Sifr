@@ -54,7 +54,9 @@ addon.UNIT_HEALTH = function(self, event, unit)
 		return
 	end
 
-	local health = si(UnitHealth(unit))
+	local cur = UnitHealth(unit)
+	local max = UnitHealthMax(unit)
+	local health = string.format("%s (%d%%)", si(cur), math.floor(100*cur/max))
 	if unit == "player" then
 		ph:SetText(health)
 	else
@@ -67,7 +69,9 @@ addon.UNIT_POWER = function(self, event, unit)
 		return
 	end
 
-	local power = si(UnitPower(unit))
+	local cur = UnitPower(unit)
+	local max = UnitPowerMax(unit)
+	local power = string.format("%s (%d%%)", si(cur), math.floor(100*cur/max))
 	if unit == "player" then
 		pp:SetText(power)
 	else
