@@ -93,9 +93,13 @@ addon.UNIT_POWER = function(self, event, unit)
 			end
 		end
 	else
-		tp:SetText(power)
-		local tt = powerColor[select(2, UnitPowerType"target")]
-		tp:SetTextColor(tt.r, tt.g, tt.b, .9)
+		if cur == 0 then
+			tp:SetText""	
+		else
+			tp:SetText(power)
+			local tt = powerColor[select(2, UnitPowerType"target")]
+			tp:SetTextColor(tt.r, tt.g, tt.b, .9)
+		end
 	end
 end
 
