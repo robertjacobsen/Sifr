@@ -3,6 +3,7 @@ local addon = CreateFrame"Frame"
 local font = select(1, GameFontNormal:GetFont())
 local healthSize = 24
 local powerSize = 18
+local class = select(2, UnitClass"player")
 
 local powerColor = {}
 powerColor["MANA"] = { r = 0.30, g = 0.30, b = 1.00 }
@@ -29,8 +30,10 @@ local pp = addon:CreateFontString"SifrPlayerPower"
 pp:SetPoint("TOP", ph, "BOTTOM", 0, -10)
 pp:SetFont(font, powerSize, "OUTLINE")
 
-local pt = powerColor[select(2, UnitPowerType"player")]
-pp:SetTextColor(pt.r, pt.g, pt.b, .9)
+local sp = addon:CreateFontString"SifrSpecialPower"
+sp:SetPoint("TOP", pp, "BOTTOM", 0, -10)
+sp:SetFont(font, healthSize, "OUTLINE")
+sp:SetTextColor(powerColor["HOLY_POWER"].r, powerColor["HOLY_POWER"].g, powerColor["HOLY_POWER"].b, .9)
 
 local th = addon:CreateFontString"SifrTargetHealth"
 th:SetPoint("CENTER", UIParent, "CENTER", 200, -50)
@@ -80,6 +83,15 @@ addon.UNIT_POWER = function(self, event, unit)
 	local power = string.format("%s (%d%%)", si(cur), per(cur, max))
 	if unit == "player" then
 		pp:SetText(power)
+
+		if class == "PALADIN" then
+			local p = UnitPower("player", 9)
+			if (p > 0) then
+				sp:SetText(p)
+			else 
+				sp:SetText""
+			end
+		end
 	else
 		tp:SetText(power)
 		local tt = powerColor[select(2, UnitPowerType"target")]
@@ -101,6 +113,9 @@ addon.PLAYER_TARGET_CHANGED = function(self, event)
 end
 
 addon.PLAYER_ENTERING_WORLD = function(self, event)
+	local pt = powerColor[select(2, UnitPowerType"player")]
+	pp:SetTextColor(pt.r, pt.g, pt.b, .9)
+
 	addon.UNIT_HEALTH(self, event, "player")
 	addon.UNIT_POWER(self, event, "player")
 end
