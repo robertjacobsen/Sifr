@@ -97,7 +97,11 @@ addon.UNIT_POWER = function(self, event, unit)
 			tp:SetText""	
 		else
 			tp:SetText(power)
-			local tt = powerColor[select(2, UnitPowerType"target")]
+			local pt = select(2, UnitPowerType"target")
+			if (pt ~= "RAGE" and pt ~= "ENERGY" and pt ~= "FOCUS" ) then
+				pt = "MANA"
+			end
+			local tt = powerColor[pt]
 			tp:SetTextColor(tt.r, tt.g, tt.b, .9)
 		end
 	end
